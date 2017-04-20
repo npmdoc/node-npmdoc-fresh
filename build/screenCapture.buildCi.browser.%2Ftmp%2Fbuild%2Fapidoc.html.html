@@ -1,0 +1,135 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/jshttp/fresh#readme">fresh (v0.5.0)</a>
+</h1>
+<h4>HTTP response freshness testing</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.fresh">module fresh</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.fresh.fresh">
+            function <span class="apidocSignatureSpan"></span>fresh
+            <span class="apidocSignatureSpan">(reqHeaders, resHeaders)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.fresh" id="apidoc.module.fresh">module fresh</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.fresh.fresh" id="apidoc.element.fresh.fresh">
+        function <span class="apidocSignatureSpan"></span>fresh
+        <span class="apidocSignatureSpan">(reqHeaders, resHeaders)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function fresh(reqHeaders, resHeaders) {
+  // fields
+  var modifiedSince = reqHeaders['if-modified-since']
+  var noneMatch = reqHeaders['if-none-match']
+
+  // unconditional request
+  if (!modifiedSince &amp;&amp; !noneMatch) {
+    return false
+  }
+
+  // Always return stale when Cache-Control: no-cache
+  // to support end-to-end reload requests
+  // https://tools.ietf.org/html/rfc2616#section-14.9.4
+  var cacheControl = reqHeaders['cache-control']
+  if (cacheControl &amp;&amp; CACHE_CONTROL_NO_CACHE_REGEXP.test(cacheControl)) {
+    return false
+  }
+
+  // if-none-match
+  if (noneMatch &amp;&amp; noneMatch !== '*') {
+    var etag = resHeaders['etag']
+    var etagStale = !etag || noneMatch.split(TOKEN_LIST_REGEXP).every(function (match) {
+      return match !== etag &amp;&amp; match !== 'W/' + etag &amp;&amp; 'W/' + match !== etag
+    })
+
+    if (etagStale) {
+      return false
+    }
+  }
+
+  // if-modified-since
+  if (modifiedSince) {
+    var lastModified = resHeaders['last-modified']
+    var modifiedStale = !lastModified || Date.parse(lastModified) &gt; Date.parse(modifiedSince)
+
+    if (modifiedStale) {
+      return false
+    }
+  }
+
+  return true
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
